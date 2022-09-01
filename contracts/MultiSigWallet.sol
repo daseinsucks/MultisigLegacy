@@ -148,7 +148,12 @@ contract MultiSigWallet {
         onlyWallet
         ownerExists(owner)
     {
-        isOwner[owner] = false; //todo: actually remove the owner from the list
+        isOwner[owner] = false;
+        for (uint i=0; i<owners.length; i++)
+            if (owners[i] == owner) {
+                delete owners[i];   //TODO: ensure this works, since now ex-owner equals 0, which may cause some unpredictable results.
+                break;                      
+            }
     }
 
     /// @dev Allows to replace an owner with a new owner. Transaction has to be sent by wallet.
