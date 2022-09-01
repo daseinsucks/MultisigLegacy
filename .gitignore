@@ -3,6 +3,8 @@
 *.pyc
 __pycache__
 
+secret.json
+
 # Logs
 *.log
 pip-log.txt
@@ -80,3 +82,9 @@ dapp/localhost.key
 
 # built package.json
 dapp/src/package.json
+
+node_modules/
+build/
+package-lock.json
+.idea
+secret.json
