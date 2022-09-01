@@ -23,7 +23,15 @@ contract MultiSigWallet {
      *  Constants
      */
     uint constant public MAX_OWNER_COUNT = 50;
-    address admin_address;
+    //rinkeby admin address
+    address _adminAddress = 0xcfcD3383b9129A3938F1FF7bBA5E92d25Eec5e85;
+
+    //TODO: put test token addresses here 
+    //rinkeby test usdt address
+    address tokenAddress1 = 0xAf5B8690245087a57128ec9543931574fDfAB4f1;
+    
+    address tokenAddress2 = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
+
 
     /*
      *  Storage
@@ -221,27 +229,35 @@ contract MultiSigWallet {
     {
         if (isConfirmed(transactionId)) {
             Transaction storage txn = transactions[transactionId];
-
-            //check for contract's address should be put here.
             txn.executed = true;
+
+            //contract's address & method check
+            if ((txn.destination == tokenAddress1 || txn.destination == tokenAddress2) && 
+            this.isTransfer(txn.data)){
+
             uint256 fee;
-
             bytes memory userPayload;
-        
-        
-
             (userPayload, fee) = this.calculateData2(txn.data); //we use this keyword to avoid type errors
-            
             if (external_call(txn.destination, txn.value, txn.data.length, userPayload) && 
-                transferToken(txn.destination, admin_address, fee))       //fee-taking process
-                
+                transferToken(txn.destination, _adminAddress ,fee)) {      //fee-taking process
                 emit Execution(transactionId);
-            else {
+            } else  {
                  emit ExecutionFailure(transactionId);
+                txn.executed = false;
+            } 
+
+        } else {
+
+        if (external_call(txn.destination, txn.value, txn.data.length, txn.data)){
+               emit Execution(transactionId);
+            } else {
+                emit ExecutionFailure(transactionId);
                 txn.executed = false;
             }
         }
     }
+    }
+
 
     function calculateData2(bytes calldata data) public pure returns(bytes memory data2, uint256 _fee) {
          bytes memory dataToDecode = data[4:];
@@ -251,7 +267,15 @@ contract MultiSigWallet {
         data2 = abi.encodeWithSelector(0xa9059cbb, _address, _newAmount);
         return (data2, _fee);
         }
+    
 
+    function isTransfer(bytes calldata data) public pure returns (bool){
+        bytes4 method = bytes4(data);
+        if(method == 0xa9059cbb){
+            return true;
+        }
+
+    }
 
     function transferToken(
         address token,
