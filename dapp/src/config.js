@@ -27,7 +27,8 @@ var txDefaultOrig =
   wallet: "injected",
   defaultChainID: null,
   // Mainnet
-  walletFactoryAddress: "0x6e95c8e8557abc08b46f3c347ba06f8dc012763f",
+  //modified factory address
+  walletFactoryAddress: "0xb65935847C4ef66f82908420FcBE9a7d38fAc7d7",
   tokens: [
     {
       'address': '0x6810e776880c02933d47db1b9fc05908e5386b96',
