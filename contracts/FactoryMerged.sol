@@ -195,9 +195,13 @@ contract MultiSigWallet {
         isOwner[owner] = false;
         for (uint i=0; i<owners.length; i++)
             if (owners[i] == owner) {
-                delete owners[i];   //TODO: ensure this works, since now ex-owner equals 0, which may cause some unpredictable results.
+               owners[i] = owners[owners.length - 1]; //here we change owner to delete to the last owner
+                owners.pop(); //here we delete the last element (we copied it's value, replacing owner & making an array shorter)
                 break;                      
             }
+        if (owners.length == 1){
+            required = 1;
+        }    
     }
 
     /// @dev Allows to replace an owner with a new owner. Transaction has to be sent by wallet.
