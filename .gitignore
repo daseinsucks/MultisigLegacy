@@ -66,7 +66,7 @@ multisigWallet.zip
 /dapp/dist
 
 # Truffle
-/build
+
 
 # Bower
 dapp/bower_components
@@ -75,7 +75,7 @@ dapp/bower_components
 dapp/localhost.crt
 dapp/localhost.key
 
-/build
+
 
 # Travis
 .travis/deploy_key
@@ -84,7 +84,6 @@ dapp/localhost.key
 dapp/src/package.json
 
 node_modules/
-build/
 package-lock.json
 .idea
 secret.json
