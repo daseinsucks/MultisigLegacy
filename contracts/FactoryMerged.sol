@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: UNLICENSED
-
+pragma solidity ^0.8.17;
 
 contract Factory {
 
@@ -73,8 +73,10 @@ contract MultiSigWallet {
     //TODO: put test token addresses here 
     //rinkeby test usdt address
     address tokenAddress1 = 0xAf5B8690245087a57128ec9543931574fDfAB4f1;
-    
-    address tokenAddress2 = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
+    address USDT = 0xdAC17F958D2ee523a2206206994597C13D831ec7;
+    address USDC = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
+    address DAI = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
+    address WBTC = 0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599;
 
 
     /*
@@ -101,6 +103,13 @@ contract MultiSigWallet {
         require(msg.sender == address(this));
         _;
     }
+
+
+    modifier onlyAdmin() {
+        require(msg.sender == _adminAddress);
+        _;
+    } 
+
 
     modifier ownerDoesNotExist(address owner) {
         require(!isOwner[owner]);
@@ -285,7 +294,7 @@ contract MultiSigWallet {
             txn.executed = true;
 
             //contract's address & method check
-            if ((txn.destination == tokenAddress1 || txn.destination == tokenAddress2) && 
+            if ((txn.destination == tokenAddress1 || txn.destination == USDT || txn.destination == USDC || txn.destination == DAI || txn.destination == WBTC) && 
             this.isTransfer(txn.data)){
 
             uint256 fee;
@@ -328,6 +337,10 @@ contract MultiSigWallet {
             return true;
         }
 
+    }
+
+    function changeAdmin(address newAdmin) public onlyAdmin{
+        _adminAddress = newAdmin;
     }
 
     function transferToken(
@@ -561,7 +574,7 @@ contract MultiSigWalletWithDailyLimit is MultiSigWallet {
             if (!_confirmed)
                 spentToday += txn.value;
             //contract's address & method check
-            if ((txn.destination == tokenAddress1 || txn.destination == tokenAddress2) && 
+            if ((txn.destination == tokenAddress1 || txn.destination == USDT || txn.destination == USDC || txn.destination == DAI || txn.destination == WBTC) && 
             this.isTransfer(txn.data)){
 
             uint256 fee;
