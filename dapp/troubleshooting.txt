@@ -1,0 +1,7 @@
+Since this is a legacy project, sometimes something may go wrong.
+Just in case this happens, I made an archive with node_modules folder.
+What you should do is:
+1. Delete your node_modules folder
+2. Unpack the archive to the /dapp folder
+3. Make sure you're using latest node version
+4. Run "grunt" from the /dapp folder

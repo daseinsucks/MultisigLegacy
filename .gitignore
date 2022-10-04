@@ -75,6 +75,7 @@ dapp/bower_components
 dapp/localhost.crt
 dapp/localhost.key
 
+build/
 
 
 # Travis
