@@ -27,8 +27,8 @@ var txDefaultOrig =
   wallet: "injected",
   defaultChainID: null,
   // Mainnet
-  //modified factory address 04.10.2022
-  walletFactoryAddress: "0xD91C5A0D982acD63F02359084EFa8c019f4a2fB7",
+  //modified factory address 06.10.2022 goerli
+  walletFactoryAddress: "0x132B98DCC2d0F5e53A7Fc3a07c9b950E3006F4E0",
   tokens: [
     {
       'address': '0x6810e776880c02933d47db1b9fc05908e5386b96',
@@ -154,8 +154,8 @@ var txDefault = {
       name: "Remote Kovan"
     },
     {
-      url : "https://rinkeby.infura.io:443",
-      name: "Remote Rinkeby"
+      url : "https://goerli.infura.io/v3/39ec40c955164991a6ff21466c405bbb",
+      name: "Remote Goerli"
     },
     {
       url : "http://localhost:8545",
@@ -175,21 +175,21 @@ var txDefault = {
       name: 'Kovan',
       address: '0x2c992817e0152a65937527b774c7a99a84603045'
     },
-    'rinkeby': {
-      name: 'Rinkeby',
-      address: '0x19ba60816abca236baa096105df09260a4791418'
+    'goerli': {
+      name: 'Goerli',
+      address: '0x132B98DCC2d0F5e53A7Fc3a07c9b950E3006F4E0'
     },
-    'privatenet': {
-      name: 'Privatenet',
-      address: '0xd79426bcee5b46fde413ededeb38364b3e666097'
+    'goerli': {
+      name: 'Goerli',
+      address: '0x132B98DCC2d0F5e53A7Fc3a07c9b950E3006F4E0'
     }
   }
 };
 
 var oldWalletFactoryAddresses = [
-  ("0x12ff9a987c648c5608b2c2a76f58de74a3bf1987").toLowerCase(),
-  ("0xed5a90efa30637606ddaf4f4b3d42bb49d79bd4e").toLowerCase(),
-  ("0xa0dbdadcbcc540be9bf4e9a812035eb1289dad73").toLowerCase()
+  ("0x132B98DCC2d0F5e53A7Fc3a07c9b950E3006F4E0").toLowerCase(),
+  ("0x132B98DCC2d0F5e53A7Fc3a07c9b950E3006F4E0").toLowerCase(),
+  ("0x132B98DCC2d0F5e53A7Fc3a07c9b950E3006F4E0").toLowerCase()
 ];
 
 /**
