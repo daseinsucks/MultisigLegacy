@@ -22,7 +22,7 @@
 //
 // const fs = require('fs');
 // const mnemonic = fs.readFileSync(".secret").toString().trim();
-const { alchemyhttp, alchemywss, goerlialchemy, goerlietherscan, rinkebykey, etherscanapi, rinkebyalchemy, goerlimnemonic, goerlihttp, infurawss, rinkebymnemonic, addressIndex, pollingInterval } = require('./secret.json');
+const { alchemyhttp, alchemywss, goerliinfura, goerlietherscan, rinkebykey, etherscanapi, rinkebyalchemy, goerlimnemonic, goerlihttp, infurawss, rinkebymnemonic, addressIndex, pollingInterval } = require('./secret.json');
 const HDWalletProvider = require("truffle-hdwallet-provider");
 module.exports = {
   /**
@@ -48,7 +48,7 @@ module.exports = {
     },
     goerli: {
       provider: () => {
-        return new HDWalletProvider(goerlimnemonic, goerlialchemy)
+        return new HDWalletProvider(goerlimnemonic, goerliinfura)
       },
       network_id: '5',
       confirmations: 0,    // # of confs to wait between deployments. (default: 0)
