@@ -27,7 +27,7 @@ var txDefaultOrig =
   wallet: "injected",
   defaultChainID: null,
   // Mainnet
-  //modified factory address 06.10.2022 goerli
+  //modified factory address 17.10.2022
   walletFactoryAddress: "0x132B98DCC2d0F5e53A7Fc3a07c9b950E3006F4E0",
   tokens: [
     {
@@ -154,8 +154,8 @@ var txDefault = {
       name: "Remote Kovan"
     },
     {
-      url : "https://goerli.infura.io/v3/39ec40c955164991a6ff21466c405bbb",
-      name: "Remote Goerli"
+      url : "https://rinkeby.infura.io:443",
+      name: "Remote Rinkeby"
     },
     {
       url : "http://localhost:8545",
@@ -175,9 +175,9 @@ var txDefault = {
       name: 'Kovan',
       address: '0x2c992817e0152a65937527b774c7a99a84603045'
     },
-    'goerli': {
-      name: 'Goerli',
-      address: '0x132B98DCC2d0F5e53A7Fc3a07c9b950E3006F4E0'
+    'rinkeby': {
+      name: 'Rinkeby',
+      address: '0x19ba60816abca236baa096105df09260a4791418'
     },
     'goerli': {
       name: 'Goerli',

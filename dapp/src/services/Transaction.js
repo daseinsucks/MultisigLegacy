@@ -336,7 +336,7 @@
               }
               else {
                 data.chain = "goerli";
-                data.etherscan = "https://goerli.etherscan.io";
+                data.etherscan = "https://testnet.etherscan.io";
                 data.walletFactoryAddress = txDefault.walletFactoryAddresses["goerli"].address;
               }
 

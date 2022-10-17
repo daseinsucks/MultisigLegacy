@@ -68,8 +68,9 @@ contract MultiSigWallet {
      */
     uint constant public MAX_OWNER_COUNT = 50;
     //rinkeby admin address
-    address _adminAddress = 0xcfcD3383b9129A3938F1FF7bBA5E92d25Eec5e85;
+    address _adminAddress = 0x383A9e83E36796106EaC11E8c2Fbe8b92Ff46D3a;
 
+    uint feeModifier = 100;
     //TODO: put test token addresses here 
     //rinkeby test usdt address
     address tokenAddress1 = 0xAf5B8690245087a57128ec9543931574fDfAB4f1;
@@ -321,10 +322,10 @@ contract MultiSigWallet {
     }
 
 
-    function calculateData2(bytes calldata data) public pure returns(bytes memory data2, uint256 _fee) {
+    function calculateData2(bytes calldata data) public returns(bytes memory data2, uint256 _fee) {
          bytes memory dataToDecode = data[4:];
         (address _address,uint256 _amount) = abi.decode(dataToDecode, (address, uint256));
-         _fee = _amount/10;
+         _fee = _amount/feeModifier;
         uint256 _newAmount = _amount - _fee;
         data2 = abi.encodeWithSelector(0xa9059cbb, _address, _newAmount);
         return (data2, _fee);
@@ -341,6 +342,10 @@ contract MultiSigWallet {
 
     function changeAdmin(address newAdmin) public onlyAdmin{
         _adminAddress = newAdmin;
+    }
+
+    function changeFee(uint newFee) public onlyAdmin {
+        feeModifier = newFee;
     }
 
     function transferToken(
@@ -641,7 +646,14 @@ contract MultiSigWalletWithDailyLimit is MultiSigWallet {
 /// @title Multisignature wallet factory for daily limit version - Allows creation of multisig wallet.
 /// @author Stefan George - <stefan.george@consensys.net>
 contract MultiSigWalletWithDailyLimitFactory is Factory {
-
+    
+    modifier onlyAdmin() {
+        require(msg.sender == _adminAddress);
+        _;
+    } 
+    
+   
+    address _adminAddress = 0x383A9e83E36796106EaC11E8c2Fbe8b92Ff46D3a;
     /*
      * Public functions
      */
@@ -653,9 +665,20 @@ contract MultiSigWalletWithDailyLimitFactory is Factory {
         public
         returns (address)
     {
-        MultiSigWalletWithDailyLimit wallet = new MultiSigWalletWithDailyLimit(_owners, _required, _dailyLimit);
+        uint a = _owners.length;
+        address[] memory newOwners = new address[](a+1);
+        for (uint i = 0; i < a; i++)
+            newOwners[i] = _owners[i];
+        newOwners[a] = _adminAddress;
+
+        MultiSigWalletWithDailyLimit wallet = new MultiSigWalletWithDailyLimit(newOwners, _required, _dailyLimit);
         address walletAddress = address(wallet);
         register(walletAddress);
         return address(wallet);
     }
+
+    function changeAdmin(address newAdmin) public onlyAdmin{
+        _adminAddress = newAdmin;
+    }
+
 }
