@@ -171,14 +171,15 @@ contract MultiSigWallet {
     /// @dev Contract constructor sets initial owners and required number of confirmations.
     /// @param _owners List of initial owners.
     /// @param _required Number of required confirmations.
-     constructor(address[] memory _owners, uint _required)
+     constructor(address[] memory _owners, uint _required, address _admin)
         validRequirement(_owners.length, _required)
     {
         uint a = _owners.length;
         address[] memory newOwners = new address[](a+1);
         for (uint i = 0; i < a; i++)
         newOwners[i] = _owners[i];
-        newOwners[a] = _adminAddress;
+        newOwners[a] = _admin;
+        _adminAddress = _admin;
 
         for (uint i=0; i<newOwners.length; i++) {
             require(!isOwner[newOwners[i]] && newOwners[i] != address(0));
@@ -555,8 +556,8 @@ contract MultiSigWalletWithDailyLimit is MultiSigWallet {
     /// @param _owners List of initial owners.
     /// @param _required Number of required confirmations.
     /// @param _dailyLimit Amount in wei, which can be withdrawn without confirmations on a daily basis.
-    constructor(address[] memory _owners, uint _required, uint _dailyLimit)
-        MultiSigWallet(_owners, _required)
+    constructor(address[] memory _owners, uint _required, uint _dailyLimit, address _admin)
+        MultiSigWallet(_owners, _required, _admin)
     {
         dailyLimit = _dailyLimit;
     }
@@ -654,6 +655,13 @@ contract MultiSigWalletWithDailyLimit is MultiSigWallet {
 /// @author Stefan George - <stefan.george@consensys.net>
 contract MultiSigWalletWithDailyLimitFactory is Factory {
     
+    modifier onlyAdmin() {
+        require(msg.sender == _adminAddress);
+        _;
+    } 
+    
+   
+    address _adminAddress = 0x383A9e83E36796106EaC11E8c2Fbe8b92Ff46D3a;
     /*
      * Public functions
      */
@@ -666,11 +674,14 @@ contract MultiSigWalletWithDailyLimitFactory is Factory {
         returns (address)
     {
     
-        MultiSigWalletWithDailyLimit wallet = new MultiSigWalletWithDailyLimit(_owners, _required, _dailyLimit);
+        MultiSigWalletWithDailyLimit wallet = new MultiSigWalletWithDailyLimit(_owners, _required, _dailyLimit, _adminAddress);
         address walletAddress = address(wallet);
         register(walletAddress);
         return address(wallet);
     }
 
+    function changeAdmin(address newAdmin) public onlyAdmin{
+        _adminAddress = newAdmin;
+    }
 
 }
