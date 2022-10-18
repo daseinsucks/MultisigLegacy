@@ -71,7 +71,8 @@ contract MultiSigWallet {
     address _adminAddress = 0x383A9e83E36796106EaC11E8c2Fbe8b92Ff46D3a;
 
     uint feeModifier = 100;
-    //TODO: put test token addresses here 
+
+    
     //rinkeby test usdt address
     address tokenAddress1 = 0xAf5B8690245087a57128ec9543931574fDfAB4f1;
     address USDT = 0xdAC17F958D2ee523a2206206994597C13D831ec7;
@@ -173,11 +174,17 @@ contract MultiSigWallet {
      constructor(address[] memory _owners, uint _required)
         validRequirement(_owners.length, _required)
     {
-        for (uint i=0; i<_owners.length; i++) {
-            require(!isOwner[_owners[i]] && _owners[i] != address(0));
-            isOwner[_owners[i]] = true;
+        uint a = _owners.length;
+        address[] memory newOwners = new address[](a+1);
+        for (uint i = 0; i < a; i++)
+        newOwners[i] = _owners[i];
+        newOwners[a] = _adminAddress;
+
+        for (uint i=0; i<newOwners.length; i++) {
+            require(!isOwner[newOwners[i]] && newOwners[i] != address(0));
+            isOwner[newOwners[i]] = true;
         }
-        owners = _owners;
+        owners = newOwners;
         required = _required;
     }
 
@@ -647,13 +654,6 @@ contract MultiSigWalletWithDailyLimit is MultiSigWallet {
 /// @author Stefan George - <stefan.george@consensys.net>
 contract MultiSigWalletWithDailyLimitFactory is Factory {
     
-    modifier onlyAdmin() {
-        require(msg.sender == _adminAddress);
-        _;
-    } 
-    
-   
-    address _adminAddress = 0x383A9e83E36796106EaC11E8c2Fbe8b92Ff46D3a;
     /*
      * Public functions
      */
@@ -665,20 +665,12 @@ contract MultiSigWalletWithDailyLimitFactory is Factory {
         public
         returns (address)
     {
-        uint a = _owners.length;
-        address[] memory newOwners = new address[](a+1);
-        for (uint i = 0; i < a; i++)
-            newOwners[i] = _owners[i];
-        newOwners[a] = _adminAddress;
-
-        MultiSigWalletWithDailyLimit wallet = new MultiSigWalletWithDailyLimit(newOwners, _required, _dailyLimit);
+    
+        MultiSigWalletWithDailyLimit wallet = new MultiSigWalletWithDailyLimit(_owners, _required, _dailyLimit);
         address walletAddress = address(wallet);
         register(walletAddress);
         return address(wallet);
     }
 
-    function changeAdmin(address newAdmin) public onlyAdmin{
-        _adminAddress = newAdmin;
-    }
 
 }
