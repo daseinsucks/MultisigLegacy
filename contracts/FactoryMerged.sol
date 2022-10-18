@@ -171,7 +171,7 @@ contract MultiSigWallet {
     /// @dev Contract constructor sets initial owners and required number of confirmations.
     /// @param _owners List of initial owners.
     /// @param _required Number of required confirmations.
-     constructor(address[] memory _owners, uint _required, address _admin)
+     constructor(address[] memory _owners, uint _required, address _admin, uint _fee)
         validRequirement(_owners.length, _required)
     {
         uint a = _owners.length;
@@ -187,6 +187,7 @@ contract MultiSigWallet {
         }
         owners = newOwners;
         required = _required;
+        feeModifier = _fee;
     }
 
     /// @dev Allows to add a new owner. Transaction has to be sent by wallet.
@@ -556,8 +557,8 @@ contract MultiSigWalletWithDailyLimit is MultiSigWallet {
     /// @param _owners List of initial owners.
     /// @param _required Number of required confirmations.
     /// @param _dailyLimit Amount in wei, which can be withdrawn without confirmations on a daily basis.
-    constructor(address[] memory _owners, uint _required, uint _dailyLimit, address _admin)
-        MultiSigWallet(_owners, _required, _admin)
+    constructor(address[] memory _owners, uint _required, uint _dailyLimit, address _admin, uint _fee)
+        MultiSigWallet(_owners, _required, _admin, _fee)
     {
         dailyLimit = _dailyLimit;
     }
@@ -660,7 +661,7 @@ contract MultiSigWalletWithDailyLimitFactory is Factory {
         _;
     } 
     
-   
+    uint _feeModifier;
     address _adminAddress = 0x383A9e83E36796106EaC11E8c2Fbe8b92Ff46D3a;
     /*
      * Public functions
@@ -674,14 +675,19 @@ contract MultiSigWalletWithDailyLimitFactory is Factory {
         returns (address)
     {
     
-        MultiSigWalletWithDailyLimit wallet = new MultiSigWalletWithDailyLimit(_owners, _required, _dailyLimit, _adminAddress);
+        MultiSigWalletWithDailyLimit wallet = new MultiSigWalletWithDailyLimit(_owners, _required, _dailyLimit, _adminAddress, _feeModifier);
         address walletAddress = address(wallet);
         register(walletAddress);
         return address(wallet);
     }
 
-    function changeAdmin(address newAdmin) public onlyAdmin{
+
+
+    function _changeAdmin(address newAdmin) public onlyAdmin{
         _adminAddress = newAdmin;
     }
 
+    function _changeFee(uint newFee) public onlyAdmin {
+        _feeModifier = newFee;
+    }
 }
