@@ -14,6 +14,6 @@ WORKDIR /multisig/dapp
 RUN unzip -o node1.zip && unzip -o node2.zip && unzip -o node3.zip
 RUN unzip -o bundles.zip
 
-EXPOSE 4700
-
-ENTRYPOINT [ "npm", "start" ]
+EXPOSE 8282
+# Run frontend
+ENTRYPOINT [ "grunt" ]
