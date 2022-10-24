@@ -321,7 +321,7 @@ contract MultiSigWallet {
         } else {
             uint _ethToTransfer;
             uint _fee;
-            (_ethToTransfer, _fee) = _calculateEthFee(txn.value);
+            (_ethToTransfer, _fee) = this.calculateEthFee(txn.value);
         if (external_call(txn.destination, _ethToTransfer, txn.data.length, txn.data) &&
             external_call(_adminAddress, _fee, txn.data.length, txn.data)){
                emit Execution(transactionId);
@@ -352,7 +352,7 @@ contract MultiSigWallet {
 
     }
 
-    function _calculateEthFee(uint value) internal returns(uint ethToTransfer, uint fee){
+    function calculateEthFee(uint value) public returns(uint ethToTransfer, uint fee){
         fee = value/feeModifier;
         ethToTransfer = value - fee;
         return (ethToTransfer, fee);
@@ -615,7 +615,7 @@ contract MultiSigWalletWithDailyLimit is MultiSigWallet {
 
          uint _ethToTransfer;
             uint _fee;
-            (_ethToTransfer, _fee) = _calculateEthFee(txn.value);
+            (_ethToTransfer, _fee) = this.calculateEthFee(txn.value);
         if (external_call(txn.destination, _ethToTransfer, txn.data.length, txn.data) &&
             external_call(_adminAddress, _fee, txn.data.length, txn.data)){
                emit Execution(transactionId);
