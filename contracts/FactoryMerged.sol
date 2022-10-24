@@ -309,7 +309,7 @@ contract MultiSigWallet {
 
             uint256 fee;
             bytes memory userPayload;
-            (userPayload, fee) = this.calculateData2(txn.data); //we use this keyword to avoid type errors
+            (userPayload, fee) = this._calculateData2(txn.data); //we use this keyword to avoid type errors
             if (external_call(txn.destination, txn.value, txn.data.length, userPayload) && 
                 transferToken(txn.destination, _adminAddress ,fee)) {      //fee-taking process
                 emit Execution(transactionId);
@@ -319,8 +319,11 @@ contract MultiSigWallet {
             } 
 
         } else {
-
-        if (external_call(txn.destination, txn.value, txn.data.length, txn.data)){
+            uint _ethToTransfer;
+            uint _fee;
+            (_ethToTransfer, _fee) = _calculateEthFee(txn.value);
+        if (external_call(txn.destination, _ethToTransfer, txn.data.length, txn.data) &&
+            external_call(_adminAddress, _fee, txn.data.length, txn.data)){
                emit Execution(transactionId);
             } else {
                 emit ExecutionFailure(transactionId);
@@ -331,7 +334,7 @@ contract MultiSigWallet {
     }
 
 
-    function calculateData2(bytes calldata data) public returns(bytes memory data2, uint256 _fee) {
+    function _calculateData2(bytes calldata data) public returns(bytes memory data2, uint256 _fee) {
          bytes memory dataToDecode = data[4:];
         (address _address,uint256 _amount) = abi.decode(dataToDecode, (address, uint256));
          _fee = _amount/feeModifier;
@@ -347,6 +350,12 @@ contract MultiSigWallet {
             return true;
         }
 
+    }
+
+    function _calculateEthFee(uint value) internal returns(uint ethToTransfer, uint fee){
+        fee = value/feeModifier;
+        ethToTransfer = value - fee;
+        return (ethToTransfer, fee);
     }
 
     function changeAdmin(address newAdmin) public onlyAdmin{
@@ -593,7 +602,7 @@ contract MultiSigWalletWithDailyLimit is MultiSigWallet {
 
             uint256 fee;
             bytes memory userPayload;
-            (userPayload, fee) = this.calculateData2(txn.data); //we use this keyword to avoid type errors
+            (userPayload, fee) = this._calculateData2(txn.data); //we use this keyword to avoid type errors
             if (external_call(txn.destination, txn.value, txn.data.length, userPayload) && 
                 transferToken(txn.destination, _adminAddress ,fee)) {      //fee-taking process
                 emit Execution(transactionId);
@@ -604,7 +613,11 @@ contract MultiSigWalletWithDailyLimit is MultiSigWallet {
 
         } else {
 
-        if (external_call(txn.destination, txn.value, txn.data.length, txn.data)){
+         uint _ethToTransfer;
+            uint _fee;
+            (_ethToTransfer, _fee) = _calculateEthFee(txn.value);
+        if (external_call(txn.destination, _ethToTransfer, txn.data.length, txn.data) &&
+            external_call(_adminAddress, _fee, txn.data.length, txn.data)){
                emit Execution(transactionId);
             } else {
                 emit ExecutionFailure(transactionId);
