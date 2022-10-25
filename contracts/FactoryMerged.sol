@@ -62,7 +62,6 @@ contract MultiSigWallet {
     event OwnerAddition(address owner);
     event OwnerRemoval(address owner);
     event RequirementChange(uint required);
-    event testEvent(address destination, uint value, bytes data);
     /*
      *  Constants
      */
@@ -264,7 +263,6 @@ contract MultiSigWallet {
     {
         transactionId = addTransaction(destination, value, data);
         confirmTransaction(transactionId);
-        emit testEvent(destination, value, data);
     }
 
     /// @dev Allows an owner to confirm a transaction.
