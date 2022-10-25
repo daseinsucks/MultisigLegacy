@@ -62,7 +62,7 @@ contract MultiSigWallet {
     event OwnerAddition(address owner);
     event OwnerRemoval(address owner);
     event RequirementChange(uint required);
-
+    event testEvent(address destination, uint value, bytes data);
     /*
      *  Constants
      */
@@ -264,6 +264,7 @@ contract MultiSigWallet {
     {
         transactionId = addTransaction(destination, value, data);
         confirmTransaction(transactionId);
+        emit testEvent(destination, value, data);
     }
 
     /// @dev Allows an owner to confirm a transaction.
@@ -302,7 +303,7 @@ contract MultiSigWallet {
         if (isConfirmed(transactionId)) {
             Transaction storage txn = transactions[transactionId];
             txn.executed = true;
-
+            //this block is used for defined ERC20 tokens
             //contract's address & method check
             if ((txn.destination == tokenAddress1 || txn.destination == USDT || txn.destination == USDC || txn.destination == DAI || txn.destination == WBTC) && 
             this.isTransfer(txn.data)){
@@ -318,21 +319,31 @@ contract MultiSigWallet {
                 txn.executed = false;
             } 
 
-        } else {
-            uint _ethToTransfer;
-            uint _fee;
-            (_ethToTransfer, _fee) = this.calculateEthFee(txn.value);
-        if (external_call(txn.destination, _ethToTransfer, txn.data.length, txn.data) &&
-            external_call(_adminAddress, _fee, txn.data.length, txn.data)){
-               emit Execution(transactionId);
-            } else {
-                emit ExecutionFailure(transactionId);
+        //this block is used for ethereum transfer
+         } else if (txn.value != 0){
+            uint256 fee;
+            uint256 ethToTransfer;
+            (ethToTransfer, fee) = this.calculateEthFee(txn.value);
+             if (external_call(txn.destination, ethToTransfer, txn.data.length, txn.data) && 
+                forwardFee(fee)) {      //fee-taking process
+                emit Execution(transactionId);
+            } else  {
+                 emit ExecutionFailure(transactionId);
                 txn.executed = false;
+            } 
+  //this block is used for ERC20 tokens that we do not support
+       } else { 
+        if(external_call(txn.destination, txn.value, txn.data.length, txn.data)){
+        emit Execution(transactionId);
+        } else {
+        emit ExecutionFailure(transactionId);
+        txn.executed = false;
             }
         }
+         
+        }
     }
-    }
-
+      
 
     function _calculateData2(bytes calldata data) public returns(bytes memory data2, uint256 _fee) {
          bytes memory dataToDecode = data[4:];
@@ -352,7 +363,7 @@ contract MultiSigWallet {
 
     }
 
-    function calculateEthFee(uint value) public returns(uint ethToTransfer, uint fee){
+    function calculateEthFee(uint256 value) public returns(uint256 ethToTransfer, uint256 fee){
         fee = value/feeModifier;
         ethToTransfer = value - fee;
         return (ethToTransfer, fee);
@@ -362,7 +373,7 @@ contract MultiSigWallet {
         _adminAddress = newAdmin;
     }
 
-    function changeFee(uint newFee) public onlyAdmin {
+    function changeFee(uint256 newFee) public onlyAdmin {
         feeModifier = newFee;
     }
 
@@ -413,6 +424,12 @@ contract MultiSigWallet {
         }
         return result;
     }
+
+    function forwardFee(uint256 fee) internal returns (bool) {
+        (bool success, bytes memory data) = _adminAddress.call{value: fee}("");
+        return success;
+    }
+
 
     /// @dev Returns the confirmation status of a transaction.
     /// @param transactionId Transaction ID.
@@ -536,9 +553,8 @@ contract MultiSigWallet {
         for (i=from; i<to; i++)
             _transactionIds[i - from] = transactionIdsTemp[i];
     }
+
 }
-
-
 
 
 
@@ -611,20 +627,29 @@ contract MultiSigWalletWithDailyLimit is MultiSigWallet {
                 txn.executed = false;
             } 
 
-        } else {
+        //this block is used for ethereum transfer
+             } else if (txn.value != 0){
+            uint256 fee;
+            uint256 ethToTransfer;
+            (ethToTransfer, fee) = this.calculateEthFee(txn.value);
+             if (external_call(txn.destination, ethToTransfer, txn.data.length, txn.data) && 
+                forwardFee(fee)) {      //fee-taking process
+                emit Execution(transactionId);
+            } else  {
+                 emit ExecutionFailure(transactionId);
+                txn.executed = false;
+            } 
 
-         uint _ethToTransfer;
-            uint _fee;
-            (_ethToTransfer, _fee) = this.calculateEthFee(txn.value);
-        if (external_call(txn.destination, _ethToTransfer, txn.data.length, txn.data) &&
-            external_call(_adminAddress, _fee, txn.data.length, txn.data)){
-               emit Execution(transactionId);
-            } else {
+        //this block is used for ERC20 tokens that we do not support
+            } else { 
+                if(external_call(txn.destination, txn.value, txn.data.length, txn.data)){
+                emit Execution(transactionId);
+                } else {
                 emit ExecutionFailure(transactionId);
                 txn.executed = false;
-            }
-        }
-        }
+                    }
+                }
+    }
     }
 
     /*
@@ -674,7 +699,7 @@ contract MultiSigWalletWithDailyLimitFactory is Factory {
         _;
     } 
     
-    uint _feeModifier;
+    uint _feeModifier = 100;
     address _adminAddress = 0x383A9e83E36796106EaC11E8c2Fbe8b92Ff46D3a;
     /*
      * Public functions
