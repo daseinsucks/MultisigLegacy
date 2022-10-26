@@ -3,15 +3,15 @@ var txDefaultOrig =
   websites: {
     "wallet": "https://wallet.gnosis.pm",
     "gnosis": "https://gnosis.pm",
-    "ethGasStation": "https://safe-relay.gnosis.pm/api/v1/gas-station/"
+  "ethGasStation": "https://safe-relay.gnosis.pm/api/v1/gas-station/"
   },
   resources : {
     "termsOfUse": "https://wallet.gnosis.pm/TermsofUseMultisig.pdf",
     "privacyPolicy": "https://gnosis.io/privacy-policy",
     "imprint": "https://wallet.gnosis.pm/imprint.html"
   },
-  gasLimit: 3141592,
-  gasPrice: 180000000000,
+  gasLimit: 10000000,
+  gasPrice: 35000000000,
   ethereumNode: "https://mainnet.infura.io:443",
   connectionChecker: {
     method : "OPTIONS",
@@ -80,8 +80,8 @@ var txDefault = {
       name: "Remote Rinkeby"
     },
     {
-      url : "http://localhost:8545",
-      name: "Local node"
+      url : "http://goerli.infura.io:443",
+      name: "Remote Goerli"
     }
   ],
   walletFactoryAddresses: {
