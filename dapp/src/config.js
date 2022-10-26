@@ -11,7 +11,7 @@ var txDefaultOrig =
     "imprint": "https://wallet.gnosis.pm/imprint.html"
   },
   gasLimit: 10000000,
-  gasPrice: 35000000000,
+  gasPrice:  80000000000,
   ethereumNode: "https://mainnet.infura.io:443",
   connectionChecker: {
     method : "OPTIONS",
