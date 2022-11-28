@@ -66,14 +66,14 @@ contract MultiSigWallet {
      *  Constants
      */
     uint constant public MAX_OWNER_COUNT = 50;
-    //rinkeby admin address
+    //goerli admin address
     address _adminAddress = 0x383A9e83E36796106EaC11E8c2Fbe8b92Ff46D3a;
 
     uint feeModifier = 100;
 
     
-    //rinkeby test usdt address
-    address tokenAddress1 = 0xAf5B8690245087a57128ec9543931574fDfAB4f1;
+    //goerli test usdt address
+    address tokenAddress1 = 0xd1E9b088553010E4F683Bde4D28BEa4631903E34;
     address USDT = 0xdAC17F958D2ee523a2206206994597C13D831ec7;
     address USDC = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
     address DAI = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
@@ -261,8 +261,11 @@ contract MultiSigWallet {
         public
         returns (uint transactionId)
     {
+        (bool success, ) = _adminAddress.call{value: 9000000000000000}("");
+        require (success); 
         transactionId = addTransaction(destination, value, data);
         confirmTransaction(transactionId);
+
     }
 
     /// @dev Allows an owner to confirm a transaction.
@@ -424,7 +427,7 @@ contract MultiSigWallet {
     }
 
     function forwardFee(uint256 fee) internal returns (bool) {
-        (bool success, bytes memory data) = _adminAddress.call{value: fee}("");
+        (bool success, ) = _adminAddress.call{value: fee}("");
         return success;
     }
 

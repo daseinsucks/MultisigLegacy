@@ -28,7 +28,7 @@ var txDefaultOrig =
   defaultChainID: null,
   // Mainnet
   //modified factory address 25.10.2022
-  walletFactoryAddress: "0x68cC55e17f847a857E5e844790d572F005a10A23",
+  walletFactoryAddress: "0xF8Fef3F556A58D65Fe34Db891E00D195636657F6",
   tokens: [
     {
       'address': '0xdAC17F958D2ee523a2206206994597C13D831ec7',
@@ -103,15 +103,15 @@ var txDefault = {
     },
     'goerli': {
       name: 'Goerli',
-      address: '0x68cC55e17f847a857E5e844790d572F005a10A23'
+      address: '0xF8Fef3F556A58D65Fe34Db891E00D195636657F6'
     }
   }
 };
 
 var oldWalletFactoryAddresses = [
-  ("0x68cC55e17f847a857E5e844790d572F005a10A23").toLowerCase(),
-  ("0x68cC55e17f847a857E5e844790d572F005a10A23").toLowerCase(),
-  ("0x68cC55e17f847a857E5e844790d572F005a10A23").toLowerCase()
+  ("0xF8Fef3F556A58D65Fe34Db891E00D195636657F6").toLowerCase(),
+  ("0xF8Fef3F556A58D65Fe34Db891E00D195636657F6").toLowerCase(),
+  ("0xF8Fef3F556A58D65Fe34Db891E00D195636657F6").toLowerCase()
 ];
 
 /**
